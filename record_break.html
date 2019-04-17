@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>闯卡记录</title>
+	<meta name="keywords" content="闯卡记录">
+	<meta name="description" content="闯卡记录">
+
+	<link rel="shortcut icon" href="favicon.ico"> <link href="css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+	<link href="css/font-awesome.css?v=4.4.0" rel="stylesheet">
+
+	<link href="css/plugins/chosen/chosen.css" rel="stylesheet">
+	<!-- Data Tables -->
+	<link href="css/plugins/dataTables/dataTables.bootstrap.css" rel="stylesheet">
+
+	<link href="css/animate.css" rel="stylesheet">
+	<link href="css/style.css?v=4.1.0" rel="stylesheet">
+	<style>
+		.chosen-select{
+			width: 150px;
+
+		}
+		.input-group
+		{
+			float: left;
+			margin-left: 20px;
+
+		}
+		.form-group
+		{
+			margin-bottom: 30px;
+		}
+
+		.form-group .font-noraml
+		{
+			float: left;
+		}
+		.layer-date
+		{
+			max-width: 200px;
+		}
+	</style>
+
+</head>
+
+<body class="gray-bg">
+<!--<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-sm-4">
+        <h2>数据对比</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="index.html">治超数据</a>
+            </li>
+            <li>
+                <strong>数据对比</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-sm-8">
+        <div class="title-action">
+            <a href="empty_page.html" class="btn btn-primary">活动区域</a>
+        </div>
+    </div>
+</div>-->
+
+<div class="wrapper wrapper-content">
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="ibox float-e-margins">
+				<div class="ibox-content">
+					<div class="form-group">
+						<!-- <label class="font-noraml">选择区域</label> -->
+						<label class="col-sm-2 control-label">查询范围：</label>
+						<div class="input-group">
+							<select data-placeholder="选择省份..." class="chosen-select"  tabindex="2">
+								<option value="">请车道编号</option>
+								<option value="110000" hassubinfo="true">北京</option>
+							</select>
+						</div>
+						<div class="input-group">
+							<select data-placeholder="选择市..." class="chosen-select" tabindex="2">
+								<option value="">请选择轴数</option>
+								<option value="110000" hassubinfo="true">北京</option>
+								<option value="120000" hassubinfo="true">天津</option>
+								<option value="810000" hassubinfo="true">香港特别行政区</option>
+								<option value="820000" hassubinfo="true">澳门特别行政区</option>
+								<option value="990000" hassubinfo="true">海外</option>
+							</select>
+						</div>
+						<div class="input-group">
+							<input type="text" placeholder="请输入车型编号" class="form-control" style="width: 150px;" >
+						</div>
+						<div class="input-group">
+							<select data-placeholder="选择省份..." class="chosen-select"  tabindex="2">
+								<option value="">请选择重量标志</option>
+								<option value="110000" hassubinfo="true">超限监测站1</option>
+								<option value="110000" hassubinfo="true">超限监测站2</option>
+							</select>
+						</div>
+					</div>
+				</div>
+				<div class="ibox-content">
+					<div class="form-group">
+						<label class="col-sm-2 control-label">请选择起止时间：</label>
+						<div class="col-sm-10">
+							<input placeholder="开始日期" class="form-control layer-date" id="start">
+							<input placeholder="结束日期" class="form-control layer-date" id="end">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-6">
+			<div class="ibox float-e-margins">
+
+				<div class="ibox-content">
+					<table class="table table-striped table-bordered table-hover dataTables-example" id="editable">
+						<thead>
+						<tr>
+							<th>闯卡地点</th>
+							<th>车牌号</th>
+							<th>时间</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr>
+							<td>小店超限监测站</td>
+							<td>晋AHJ352</td>
+							<td>2018-08-16 16:00:00</td>
+						</tr>
+						<tr>
+							<td>小店超限监测站</td>
+							<td>晋AHJ352</td>
+							<td>2018-08-16 16:00:00</td>
+						</tr>
+						<tr>
+							<td>小店超限监测站</td>
+							<td>晋AHJ352</td>
+							<td>2018-08-16 16:00:00</td>
+						</tr>
+						<tr>
+							<td>小店超限监测站</td>
+							<td>晋AHJ352</td>
+							<td>2018-08-16 16:00:00</td>
+						</tr>
+
+
+						</tbody>
+
+					</table>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-6">
+			<div class="ibox float-e-margins">
+
+				<div class="ibox-content">
+					<img src="img/vehplate.png" alt="" width="100%" height="700px">
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+<!-- 全局js -->
+<script src="js/jquery.min.js?v=2.1.4"></script>
+<script src="js/bootstrap.min.js?v=3.3.6"></script>
+
+<!-- 自定义js -->
+<script src="js/content.js?v=1.0.0"></script>
+
+<!-- Chosen -->
+<script src="js/plugins/chosen/chosen.jquery.js"></script>
+
+<script src="js/plugins/jeditable/jquery.jeditable.js"></script>
+<!-- Data Tables -->
+<script src="js/plugins/dataTables/jquery.dataTables.js"></script>
+<script src="js/plugins/dataTables/dataTables.bootstrap.js"></script>
+
+<!-- layerDate plugin javascript -->
+<script src="js/plugins/layer/laydate/laydate.js"></script>
+
+<script src="js/sxsh/sxsh-common.js"></script>
+<!-- Page-Level Scripts -->
+<script>
+	$(document).ready(function () {
+		$('.dataTables-example').dataTable();
+
+		/* Init DataTables */
+		// var oTable = $('#editable').dataTable();
+
+		/* Apply the jEditable handlers to the table */
+		/* oTable.$('td').editable('../example_ajax.php', {
+		 "callback": function (sValue, y) {
+		 var aPos = oTable.fnGetPosition(this);
+		 oTable.fnUpdate(sValue, aPos[0], aPos[1]);
+		 },
+		 "submitdata": function (value, settings) {
+		 return {
+		 "row_id": this.parentNode.getAttribute('id'),
+		 "column": oTable.fnGetPosition(this)[2]
+		 };
+		 },
+
+		 "width": "90%",
+		 "height": "100%"
+		 }); */
+
+
+	});
+
+	/* function fnClickAddRow() {
+	 $('#editable').dataTable().fnAddData([
+	 "Custom row",
+	 "New row",
+	 "New row",
+	 "New row",
+	 "New row"]);
+
+	 } */
+
+
+
+	//外部js调用
+	/* laydate({
+	 elem: '#hello', //目标元素。由于laydate.js封装了一个轻量级的选择器引擎，因此elem还允许你传入class、tag但必须按照这种方式 '#id .class'
+	 event: 'focus' //响应事件。如果没有传入event，则按照默认的click
+	 }); */
+
+	//日期范围限制
+	var start = {
+		elem: '#start',
+		format: 'YYYY/MM/DD hh:mm:ss',
+		min: laydate.now(), //设定最小日期为当前日期
+		max: '2099-06-16 23:59:59', //最大日期
+		istime: true,
+		istoday: false,
+		choose: function (datas) {
+			end.min = datas; //开始日选好后，重置结束日的最小日期
+			end.start = datas //将结束日的初始值设定为开始日
+		}
+	};
+	var end = {
+		elem: '#end',
+		format: 'YYYY/MM/DD hh:mm:ss',
+		min: laydate.now(),
+		max: '2099-06-16 23:59:59',
+		istime: true,
+		istoday: false,
+		choose: function (datas) {
+			start.max = datas; //结束日选好后，重置开始日的最大日期
+		}
+	};
+	laydate(start);
+	laydate(end);
+</script>
+
+
+</body>
+
+</html>

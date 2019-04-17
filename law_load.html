@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>法律法规</title>
+    <meta name="keywords" content="法律法规">
+    <meta name="description" content="法律法规">
+    <link rel="shortcut icon" href="favicon.ico"> <link href="css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="css/font-awesome.css?v=4.4.0" rel="stylesheet">
+    <link href="css/plugins/footable/footable.core.css" rel="stylesheet">
+    <link href="css/animate.css" rel="stylesheet">
+    <link href="css/style.css?v=4.1.0" rel="stylesheet">
+
+</head>
+
+<body class="gray-bg">
+    <div class="wrapper wrapper-content animated fadeInRight">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-content">
+                            <table class="footable table table-stripped toggle-arrow-tiny" data-page-size="8">
+                                <thead>
+									<tr>
+										<th data-toggle="true">文号</th>
+										<th>标题</th>
+										<th>发布日期</th>
+										<th>操作</th>
+									</tr>
+                                </thead>
+                                <tbody id="tbody">
+									<!--<tr>
+										<td>公路超限监测站管理办法</td>
+										<td>《公路超限监测站管理办法》</td>
+										<td>2018-08-28</td>
+										<td><a class="J_menuItem" href="<?/*=base_url()*/?>index.php?c=welcome&m=law_new">编辑</a>/<a >删除</a></td>
+									</tr>-->
+                                </tbody>
+                                <tfoot>
+									<tr>
+										<td colspan="5">
+											<ul class="pagination pull-right"></ul>
+										</td>
+									</tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <!-- 全局js -->
+    <script src="js/jquery.min.js?v=2.1.4"></script>
+    <script src="js/bootstrap.min.js?v=3.3.6"></script>
+    <script src="js/plugins/footable/footable.all.min.js"></script>
+
+	<script src="js/plugins/layer/layer.min.js"></script>
+
+    <!-- 自定义js -->
+    <script src="js/content.js?v=1.0.0"></script>
+    <script>
+        $(document).ready(function() {
+            $('.footable').footable();
+            $('.footable2').footable();
+			load_file();
+        });
+		function load_file()
+		{
+			//加载文件
+			$.ajax({
+				url: '<?=base_url()?>index.php?c=site&m=load_file',
+				type: 'GET',
+				dataType: 'json',
+				success: function (data) {
+					if(data.code==1)
+					{
+						var str="";
+						var ary=data.data;
+						for(var i=0;i<ary.length;i++)
+						{
+							str+="<tr><td>"+ary[i].lable+"</td><td><a onclick=file('"+ary[i].location+"')>"+ary[i].title+"</a></td><td>"+ary[i].time+"</td><td><a class='J_menuItem'onclick=file('"+ary[i].location+"')>查看</a>/<a onclick=del_file('"+ary[i].id+"')>删除</a></td></tr>";
+						}
+						$("#tbody").append(str);
+					}
+				}
+			});
+		}
+
+		function del_file(id)
+		{
+			$.ajax({
+				url: '<?=base_url()?>index.php?c=site&m=del_file&id='+id,
+				type: 'GET',
+				dataType: 'json',
+				success: function (data) {
+					if(data.code==1)
+					{
+						layer.open({
+							content: data.msg,
+							yes: function(index, layero){
+								//如果设定了yes回调，需进行手工关闭
+								window.location.reload();
+							}
+						});
+					}
+					else {
+						layer.alert(data.msg);
+					}
+				}
+			});
+		}
+		function file(location)
+		{
+			var a =window.open("<?=base_url()?>"+location+"");
+
+		}
+
+    </script>
+
+
+</body>
+
+</html>

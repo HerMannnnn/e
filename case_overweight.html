@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>超载案件</title>
+    <meta name="keywords" content="超载案件">
+    <meta name="description" content="超载案件">
+
+    <link rel="shortcut icon" href="favicon.ico"> <link href="css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="css/font-awesome.css?v=4.4.0" rel="stylesheet">
+    <link href="css/plugins/footable/footable.core.css" rel="stylesheet">
+
+    <link href="css/animate.css" rel="stylesheet">
+    <link href="css/style.css?v=4.1.0" rel="stylesheet">
+
+</head>
+
+<body class="gray-bg">
+    <div class="wrapper wrapper-content animated fadeInRight">
+
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="ibox float-e-margins">
+
+                        <div class="ibox-content">
+
+                            <table class="footable table table-stripped toggle-arrow-tiny" data-page-size="8">
+                                <thead>
+									<tr>
+										<th data-toggle="true">文件标题</th>
+										<th>操作人</th>
+										<th>时间</th>
+										<th>操作</th>
+									</tr>
+                                </thead>
+                                <tbody>
+									<tr>
+										<td>公安交通管理行政处罚决定书</td>
+										<td>李斌</td>
+										<td>2018-08-28</td>
+										<td><a onclick="new_page()"><i class="fa fa-file-text text-navy"></i>查看</a></td>
+									</tr>
+									<tr>
+										<td>公安交通管理行政处罚决定书</td>
+										<td>李斌</td>
+										<td>2018-08-28</td>
+										<td><a onclick="new_page()"><i class="fa fa-file-text text-navy"></i>查看</a></td>
+									</tr>
+									<tr>
+										<td>公安交通管理行政处罚决定书</td>
+										<td>李斌</td>
+										<td>2018-08-28</td>
+										<td><a onclick="new_page()"><i class="fa fa-file-text text-navy"></i>查看</a></td>
+									</tr>
+                                </tbody>
+                                <tfoot>
+									<tr>
+										<td colspan="5">
+											<ul class="pagination pull-right"></ul>
+										</td>
+									</tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    <!-- 全局js -->
+    <script src="js/jquery.min.js?v=2.1.4"></script>
+    <script src="js/bootstrap.min.js?v=3.3.6"></script>
+    <script src="js/plugins/footable/footable.all.min.js"></script>
+
+    <!-- 自定义js -->
+    <script src="js/content.js?v=1.0.0"></script>
+    <script>
+        $(document).ready(function() {
+            $('.footable').footable();
+            $('.footable2').footable();
+        });
+		function new_page()
+		{
+			window.open("<?=base_url()?>/pdf/test.pdf");
+		}
+    </script>
+
+
+</body>
+
+</html>

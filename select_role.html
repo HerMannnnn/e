@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>角色列表</title>
+    <meta name="keywords" content="角色列表">
+    <meta name="description" content="角色列表">
+
+    <link rel="shortcut icon" href="favicon.ico"> <link href="css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="css/font-awesome.css?v=4.4.0" rel="stylesheet">
+
+	<link href="css/plugins/chosen/chosen.css" rel="stylesheet">
+	<!-- Data Tables -->
+	<link href="css/plugins/dataTables/dataTables.bootstrap.css" rel="stylesheet">
+
+    <link href="css/animate.css" rel="stylesheet">
+    <link href="css/style.css?v=4.1.0" rel="stylesheet">
+	<style>
+		.chosen-select{
+			width: 150px;
+		}
+		.input-group
+		{
+			float: left;
+			margin-left: 20px;
+		}
+		.form-group
+		{
+			margin-bottom: 30px;
+		}
+		.form-group .font-noraml
+		{
+			float: left;
+		}
+	</style>
+</head>
+
+<body class="gray-bg">
+    <div class="wrapper wrapper-content">
+		<div class="row">
+			<div class="col-sm-2">
+				<div class="ibox float-e-margins">
+					<div class="ibox-content">
+						<div class="form-group">
+							<!-- <label class="font-noraml">选择区域</label> -->
+							<div class="input-group">
+								<label class="col-sm-2 control-label" >选择权限：</label>
+								<select data-placeholder="选择权限..." class="chosen-select"  tabindex="2"id="role_id">
+									<option value="">请选择权限</option>
+									<option value="1" hassubinfo="true">超级管理员</option>
+									<option value="2" hassubinfo="true">管理员</option>
+									<option value="4" hassubinfo="true">普通用户</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group" style="float:right;margin-top:80px;">
+							<div class="col-sm-4 ">
+								<button class="btn btn-primary" type="button" onclick="update_role()">确认</button>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+    <!-- 全局js -->
+    <script src="js/jquery.min.js?v=2.1.4"></script>
+    <script src="js/bootstrap.min.js?v=3.3.6"></script>
+
+    <!-- 自定义js -->
+    <script src="js/content.js?v=1.0.0"></script>
+
+	<!-- Chosen -->
+	<script src="js/plugins/chosen/chosen.jquery.js"></script>
+
+	<script src="js/plugins/jeditable/jquery.jeditable.js"></script>
+	<!-- Data Tables -->
+	<script src="js/plugins/dataTables/jquery.dataTables.js"></script>
+	<script src="js/plugins/dataTables/dataTables.bootstrap.js"></script>
+
+	<script src="js/sxsh/sxsh-common.js"></script>
+	<script src="js/plugins/layer/layer.min.js"></script>
+	<!-- Page-Level Scripts -->
+	<script>
+
+		$(document).ready(function () {
+			var userId=GetQueryString('userId');
+			if(userId==null)
+			{
+				layer.alert("没有获取到用户Id");
+				//location.href = "about:blank";
+			}
+		});
+		function update_role()
+		{
+			var userId=GetQueryString('userId');
+			if(userId==null)
+			{
+				layer.alert("没有获取到用户Id");
+				window.close();
+			}
+			else{
+				var role_id=$("#role_id").val();
+				console.log("role_id"+role_id);
+				$.ajax({
+					url: '<?=base_url()?>index.php?c=user&m=update_role&user_id='+userId+'&role_id='+role_id,
+					type: 'GET',
+					dataType: 'json',
+					success: function (data) {
+						if(data.code==1)
+						{
+							var index = layer.open();
+							layer.open({
+								content: '修改成功',
+								yes: function(index, layero){
+									//do something
+									layer.close(index); //如果设定了yes回调，需进行手工关闭
+									parent.location.reload();
+								}
+							});
+						}
+						else
+						{
+							layer.alert("出错了，请稍后重试！");
+
+						}
+					}
+				});
+			}
+		}
+		function GetQueryString(name)
+		{
+			var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+			var r = window.location.search.substr(1).match(reg);
+			if(r!=null)return  unescape(r[2]); return null;
+		}
+	</script>
+</body>
+
+</html>

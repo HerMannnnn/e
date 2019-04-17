@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <title>站点信息</title>
+    <meta name="keywords" content="站点信息">
+    <meta name="description" content="站点信息">
+
+    <link rel="shortcut icon" href="favicon.ico"> <link href="css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="css/font-awesome.css?v=4.4.0" rel="stylesheet">
+	
+	<link href="css/plugins/chosen/chosen.css" rel="stylesheet">
+	<!-- Data Tables -->
+	<link href="css/plugins/dataTables/dataTables.bootstrap.css" rel="stylesheet">
+
+    <link href="css/animate.css" rel="stylesheet">
+    <link href="css/style.css?v=4.1.0" rel="stylesheet">
+	<style>
+		.chosen-select{
+			width: 150px;
+		}
+		.input-group
+		{
+			float: left;
+			margin-left: 20px;
+		}
+		.form-group
+		{
+			margin-bottom: 30px;
+		}
+		
+		.form-group .font-noraml
+		{
+			float: left;	
+		}
+
+	</style>
+
+</head>
+
+<body class="gray-bg">
+
+    <div class="wrapper wrapper-content">
+
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="ibox float-e-margins">
+					<div class="ibox-title">
+						<h5>站点信息录入（*所有信息都为必填项）</h5>
+						<div class="ibox-tools">
+							<a class="collapse-link">
+								<i class="fa fa-chevron-up"></i>
+							</a>
+							<a class="close-link">
+								<i class="fa fa-times"></i>
+							</a>
+						</div>
+					</div>
+					<div class="ibox-content">
+						<form class="form-horizontal m-t" id="commentForm" method="post" action="<?php echo site_url('?c=site&m=insert_site');?>" onsubmit=" return checkform()">
+							<div class="form-group">
+								<!-- <label class="font-noraml">选择区域</label> -->
+								<label class="col-sm-3 control-label">选择所属区域：</label>
+								<div class="input-group">
+									<select data-placeholder="选择省份..." class="chosen-select"  tabindex="2" id="select_province" onchange="load_region_next(2)">
+										<option value="">请选择省份</option>
+									</select>
+								</div>
+								<div class="input-group">
+									<select data-placeholder="选择市..." class="chosen-select" tabindex="2"  id="select_city" onchange="load_region_next(3)">
+										<option value="">请选择市</option>
+									</select>
+								</div>
+								<div class="input-group">
+									<select data-placeholder="选择县区..." class="chosen-select" tabindex="2" id="select_county"  onchange="load_region_next(4)"  name="regionid">
+										<option value="">请选择县、区</option>
+									</select>
+								</div>
+							</div>
+
+							
+							<div class="form-group">
+								<label class="col-sm-3 control-label">站点名称：</label>
+								<div class="col-sm-4">
+									<input id="sitename" name="sitename" minlength="4" type="text" class="form-control" required="" aria-required="true">
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label class="col-sm-3 control-label">站点类型：</label>
+								<div class="col-sm-4">
+									<input id="type" name="type" type="text" class="form-control"  required="" aria-required="true" minlength="2">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">负责人：</label>
+								<div class="col-sm-4">
+									<input id="fzr" name="fzr" type="text" class="form-control"  required="" aria-required="true"  minlength="2">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">联系人：</label>
+								<div class="col-sm-4">
+									<input id="lxr" name="lxr" type="text" class="form-control"  required="" aria-required="true"  minlength="2">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">联系电话：</label>
+								<div class="col-sm-4">
+									<input id="tel" name="tel" type="text" class="form-control"  minlength="11">
+								</div>
+							</div>
+							
+
+							<div class="form-group">
+								<div class="col-sm-4 col-sm-offset-3">
+									<button class="btn btn-primary" type="submit"  id="formid" onclick="upload_station()" >提交</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+    <!-- 全局js -->
+    <script src="js/jquery.min.js?v=2.1.4"></script>
+    <script src="js/bootstrap.min.js?v=3.3.6"></script>
+
+    <!-- 自定义js -->
+    <script src="js/content.js?v=1.0.0"></script>
+
+	<!-- Chosen -->
+	<script src="js/plugins/chosen/chosen.jquery.js"></script>
+	
+	<script src="js/plugins/jeditable/jquery.jeditable.js"></script>
+	<!-- Data Tables -->
+	<script src="js/plugins/dataTables/jquery.dataTables.js"></script>
+	<script src="js/plugins/dataTables/dataTables.bootstrap.js"></script>
+
+	<script src="js/plugins/layer/layer.min.js"></script>
+	
+	<script src="js/sxsh/sxsh-common.js"></script>
+
+	<script src="js/jquery-form.js"></script>
+	<!-- Page-Level Scripts -->
+	<script>
+		$(document).ready(function () {
+			load_region(0,1);
+		});
+
+		function checkform()
+		{
+			var region_id=$("#select_county").val();
+
+			if(region_id=="")
+			{
+				layer.alert("请选择所属区域！");
+				return false;
+			}
+			else {
+				return true;
+			}
+		}
+		function upload_station()
+		{
+			$("#commentForm").ajaxForm(function(data){
+				data=eval('('+data+')');
+				console.log(data);
+				if(data.code==1)
+				{
+					layer.open({
+						content: '添加成功',
+						yes: function(index, layero){
+							//如果设定了yes回调，需进行手工关闭
+							window.location.reload();
+						}
+					});
+
+
+				}
+				else
+				{
+					layer.alert("添加出错，请稍后重试！");
+				}
+				console.log(data.msg);
+			});
+		}
+		function check_siteid()
+		{
+			var siteid=$("#siteid").val();
+
+			$.ajax({
+				url: '<?=base_url()?>index.php?c=site&m=check_siteid&site_id=' + siteid ,
+				type: 'GET',
+				dataType: 'json',
+				success: function (data) {
+
+					if(data.code==0)
+					{
+						layer.alert("此id已经存在，请重新输入后重试！");
+						$("#siteid").val("");
+					}
+				}
+			});
+		}
+		function load_region(parent_id,order_id)
+		{
+			$.ajax({
+				url: '<?=base_url()?>index.php?c=record&m=load_region&parent_id='+parent_id+'&order_id='+order_id,
+				type: 'GET',
+				dataType: 'json',
+				success: function (data) {
+					//console.log(data);
+					if(data.code==1)
+					{
+						var str="";
+						var ary=data.data;
+						for(var i=0;i<ary.length;i++)
+						{
+							str+="<option value="+ary[i].regionid+" hassubinfo='true'>"+ary[i].name+"</option>";
+						}
+						if(order_id==1)
+						{
+							$("#select_province").append(str);
+							//$("#select_province").chosen("destroy");
+							$("#select_province").trigger("chosen:updated");
+						}
+						else if(order_id==2)
+						{
+							$("#select_city").append(str);
+							$("#select_city").trigger("chosen:updated");
+						}
+						else if(order_id==3)
+						{
+							$("#select_county").append(str);
+							$("#select_county").trigger("chosen:updated");
+						}
+						else if(order_id==4)
+						{
+							$("#select_station").append(str);
+							$("#select_station").trigger("chosen:updated");
+						}
+					}
+				},
+				error:function(data)
+				{
+					console.log(data);
+				}
+			});
+		}
+
+		function load_region_next(flag)
+		{
+			var parent_id;
+			if(flag==2)
+			{
+				parent_id=$("#select_province").val();
+				$("#select_city").empty();
+				$("#select_city").append("<option>请选择市</option>");
+				$("#select_city").trigger("chosen:updated");
+
+				$("#select_county").empty();
+				$("#select_county").append("<option>请选择县、区</option>");
+				$("#select_county").trigger("chosen:updated");
+
+				$("#select_station").empty();
+				$("#select_station").append("<option>请选择站点</option>");
+				$("#select_station").trigger("chosen:updated");
+			}
+			else if(flag==3)
+			{
+
+				$("#select_county").empty();
+				$("#select_county").append("<option>请选择县、区</option>");
+				$("#select_county").trigger("chosen:updated");
+
+				$("#select_station").empty();
+				$("#select_station").append("<option>请选择站点</option>");
+				$("#select_station").trigger("chosen:updated");
+				//$("#select_couty").val("默认值").trigger("chosen:updated");
+				parent_id=$("#select_city").val();
+			}
+			else if(flag==4)
+			{
+
+				$("#select_station").empty();
+				$("#select_station").append("<option>请选择站点</option>");
+				$("#select_station").trigger("chosen:updated");
+				//$("#select_couty").val("默认值").trigger("chosen:updated");
+				parent_id=$("#select_county").val();
+				console.log(parent_id,flag);
+			}
+			else if(flag==5)
+			{
+				var station_id=$("#select_station").val();
+				//realtime_record(123456);
+
+			}
+
+			load_region(parent_id,flag);
+		}
+	</script>
+
+
+</body>
+
+</html>

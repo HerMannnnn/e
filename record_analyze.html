@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据分析</title>
+    <meta name="keywords" content="数据分析">
+    <meta name="description" content="数据分析">
+
+    <link rel="shortcut icon" href="favicon.ico"> <link href="css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="css/font-awesome.css?v=4.4.0" rel="stylesheet">
+	
+	<link href="css/plugins/chosen/chosen.css" rel="stylesheet">
+	<!-- Data Tables -->
+	<link href="css/plugins/dataTables/dataTables.bootstrap.css" rel="stylesheet">
+
+    <link href="css/animate.css" rel="stylesheet">
+    <link href="css/style.css?v=4.1.0" rel="stylesheet">
+	<style>
+		.chosen-select{
+			width: 150px;
+		}
+		.input-group
+		{
+			float: left;
+			margin-left: 20px;
+		}
+		.form-group
+		{
+			margin-bottom: 30px;
+		}
+		
+		.form-group .font-noraml
+		{
+			float: left;	
+		}
+		.layer-date
+		{
+			max-width: 200px;
+			float: left;
+		}
+		.btn-primary
+		{
+			margin-left: 20px;;
+		}
+	</style>
+
+</head>
+
+<body class="gray-bg">
+    <div class="wrapper wrapper-content">
+        <div class="row">
+			<div class="col-sm-12">
+				<div class="ibox float-e-margins">
+					<div class="ibox-content">
+						<div class="form-group">
+							<!-- <label class="font-noraml">选择区域</label> -->
+							<label class="col-sm-2 control-label">类型：</label>
+							<div class="input-group">
+								<select data-placeholder="选择类型..." class="chosen-select"  tabindex="2" id="type">
+									<option value="1">按车流量</option>
+									<option value="2">按超载量</option>
+									<option value="3">按超载率</option>
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="ibox-content">
+						<div class="form-group">
+							<label class="col-sm-2 control-label">请选择起止时间：</label>
+							<div class="col-sm-10">
+								<input placeholder="请选择起止时间" class="form-control layer-date" id="start">
+								<button class="btn btn-primary " type="button" onclick="record_analyze()">查询</button>
+							</div>
+						</div>
+					</div>
+				</div>
+            </div>
+        </div>
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="ibox float-e-margins">
+					<div class="ibox-title">
+						<h5>数据分析</h5>
+						<div class="ibox-tools">
+							<a class="collapse-link">
+								<i class="fa fa-chevron-up"></i>
+							</a>
+						</div>
+					</div>
+					<div class="ibox-content">
+						<div class="echarts" id="echarts-bar-chart"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+    <!-- 全局js -->
+    <script src="js/jquery.min.js?v=2.1.4"></script>
+    <script src="js/bootstrap.min.js?v=3.3.6"></script>
+
+    <!-- 自定义js -->
+    <script src="js/content.js?v=1.0.0"></script>
+
+	<!-- Chosen -->
+	<script src="js/plugins/chosen/chosen.jquery.js"></script>
+	
+	<script src="js/plugins/jeditable/jquery.jeditable.js"></script>
+	<!-- Data Tables -->
+	<script src="js/plugins/dataTables/jquery.dataTables.js"></script>
+	<script src="js/plugins/dataTables/dataTables.bootstrap.js"></script>
+
+	<!-- layerDate plugin javascript -->
+	<script src="js/plugins/layer/laydate/laydate.js"></script>
+	<script src="js/plugins/layer/layer.min.js"></script>
+
+	<!-- ECharts -->
+	<script src="js/plugins/echarts/echarts-all.js"></script>
+	<script src="js/sxsh/sxsh-common.js"></script>
+	
+	<!-- Page-Level Scripts -->
+	<script>
+		var barChart = echarts.init(document.getElementById("echarts-bar-chart"));
+		var baroption = {
+			title : {
+				text: '车流量'
+			},
+			tooltip : {
+				trigger: 'axis'
+			},
+			legend: {
+				data:['数据统计']
+			},
+			grid:{
+				x:40,
+				x2:40,
+				y2:24
+			},
+			calculable : true,
+			xAxis : [
+				{
+					type : 'category'
+				}
+			],
+			yAxis : [
+				{
+					type : 'value'
+				}
+			],
+			series : [
+				{
+					name:'数据统计',
+					type:'bar',
+					markPoint : {
+						data : [
+							{type : 'max', name: '最大值'},
+							{type : 'min', name: '最小值'}
+						]
+					},
+					markLine : {
+						data : [
+							{type : 'average', name: '平均值'}
+						]
+					}
+				},
+			]
+		};
+		$(document).ready(function () {
+			$('.dataTables-example').dataTable();
+			/*barChart.setOption(baroption);
+			window.onresize = barChart.resize;*/
+		});
+
+		//外部js调用
+		/* laydate({
+			elem: '#hello', //目标元素。由于laydate.js封装了一个轻量级的选择器引擎，因此elem还允许你传入class、tag但必须按照这种方式 '#id .class'
+			event: 'focus' //响应事件。如果没有传入event，则按照默认的click
+		}); */
+
+		//日期范围限制
+		//年月范围
+		laydate.render({
+			elem: '#start',
+			type: 'date',
+			range: '~'
+		});
+
+		function record_analyze()
+		{
+			var type=$("#type").val();
+			var time =$("#start").val();
+			if(type!=''&&time!='')
+			{
+				time=time.replace(/\s+/g,"");
+				$.ajax({
+					url: '<?=base_url()?>index.php?c=record&m=record_analyze&type=' + type + '&time=' + time,
+					type: 'GET',
+					dataType: 'json',
+					success: function (data) {
+						var ary=data.data;
+						if(data.code==1&&ary.length>0)
+						{
+							var ary_xAxis=[],ary_value=[];
+							for(var i=0;i<ary.length;i++)
+							{
+								ary_xAxis.push(ary[i].siteid);
+								ary_value.push(ary[i].count);
+							}
+							baroption.xAxis[0].data=[];
+							baroption.series[0].data=[];
+							baroption.xAxis[0].data=ary_xAxis;
+							baroption.series[0].data=ary_value;
+							barChart.setOption(baroption);
+							window.onresize = barChart.resize;
+						}
+						else
+						{
+							layer.alert('暂无数据！');
+						}
+					},
+					error:function(data)
+					{
+						layer.alert('出错了，请稍后重试！');
+					}
+				});
+			}
+			else{
+				layer.alert('请填写查询条件！');
+			}
+		}
+	</script>
+</body>
+</html>

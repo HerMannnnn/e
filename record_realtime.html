@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <title>实时数据</title>
+    <meta name="keywords" content="实时数据">
+    <meta name="description" content="实时数据">
+
+    <link rel="shortcut icon" href="favicon.ico"> <link href="css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="css/font-awesome.css?v=4.4.0" rel="stylesheet">
+	
+	<link href="css/plugins/chosen/chosen.css" rel="stylesheet">
+	<!-- Data Tables -->
+	<link href="css/plugins/dataTables/dataTables.bootstrap.css" rel="stylesheet">
+
+    <link href="css/animate.css" rel="stylesheet">
+    <link href="css/style.css?v=4.1.0" rel="stylesheet">
+	<style>
+		.chosen-select{
+			width: 150px;
+		}
+		.input-group
+		{
+			float: left;
+			margin-left: 20px;
+		}
+		.form-group
+		{
+			margin-bottom: 30px;
+		}
+		
+		.form-group .font-noraml
+		{
+			float: left;	
+		}
+	</style>
+
+</head>
+
+<body class="gray-bg">
+    <!--<div class="row wrapper border-bottom white-bg page-heading">
+        <div class="col-sm-4">
+            <h2>实时数据</h2>
+            <ol class="breadcrumb">
+                <li>
+                    <a href="index.html">治超站点</a>
+                </li>
+                <li>
+                    <strong>实时数据</strong>
+                </li>
+            </ol>
+        </div>
+        <div class="col-sm-8">
+            <div class="title-action">
+                <a href="empty_page.html" class="btn btn-primary">活动区域</a>
+            </div>
+        </div>
+    </div>
+-->
+    <div class="wrapper wrapper-content">
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="ibox float-e-margins">
+					<div class="ibox-content">
+						<div class="form-group">
+							<!-- <label class="font-noraml">选择区域</label> -->
+							<div class="input-group">
+								<select data-placeholder="选择省份..." class="chosen-select"  tabindex="2" id="select_province" onchange="load_region_next(2)">
+									<option value="">请选择省份</option>
+								</select>
+							</div>
+							<div class="input-group">
+								<select data-placeholder="选择市..." class="chosen-select" tabindex="2"  id="select_city" onchange="load_region_next(3)">
+									<option value="">请选择市</option>
+								</select>
+							</div>
+							<div class="input-group">
+								<select data-placeholder="选择县区..." class="chosen-select" tabindex="2" id="select_county"  onchange="load_region_next(4)">
+									<option value="">请选择县、区</option>
+								</select>
+							</div>
+							<div class="input-group">
+								<select data-placeholder="选择站点..." class="chosen-select"  tabindex="2" id="select_station" onchange="load_region_next(5)">
+									<option value="">请选择站点</option>
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="ibox float-e-margins">
+					<div class="ibox-title">
+						<h5>车辆实时监测信息</h5>
+						<div class="ibox-tools">
+							<a class="collapse-link">
+								<i class="fa fa-chevron-up"></i>
+							</a>
+						</div>
+					</div>
+					<div class="ibox-content" >
+						<img id='car_img' style="width:500px;height: 500px" alt="暂无图片信息">
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="ibox float-e-margins">
+					<!--<div class="ibox-title">
+						<h5>数据表格 <small>分类，查找</small></h5>
+						<div class="ibox-tools">
+							<a class="collapse-link">
+								<i class="fa fa-chevron-up"></i>
+							</a>
+						</div>
+					</div>-->
+					<div class="ibox-content">
+						<table class="table table-striped table-bordered table-hover dataTables-example" id="editable">
+							<thead>
+								<th>站点名称</th>
+								<th>车牌号码</th>
+								<th>轴数</th>
+								<th>轴型</th>
+								<th>总重</th>
+								<th>限重</th>
+								<th>超重</th>
+								<th>超载率</th>
+								<th>称重时间</th>
+							</thead>
+							<tbody id="tbody">
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+    <!-- 全局js -->
+    <script src="js/jquery.min.js?v=2.1.4"></script>
+    <script src="js/bootstrap.min.js?v=3.3.6"></script>
+
+    <!-- 自定义js -->
+    <script src="js/content.js?v=1.0.0"></script>
+
+	<!-- Chosen -->
+	<script src="js/plugins/chosen/chosen.jquery.js"></script>
+	
+	<script src="js/plugins/jeditable/jquery.jeditable.js"></script>
+	<!-- Data Tables -->
+	<script src="js/plugins/dataTables/jquery.dataTables.js"></script>
+	<script src="js/plugins/dataTables/dataTables.bootstrap.js"></script>
+	
+	<script src="js/sxsh/sxsh-common.js"></script>
+	<!-- Page-Level Scripts -->
+	    <script>
+	        $(document).ready(function () {
+	            $('.dataTables-example').dataTable();
+	            /* Init DataTables */
+	            var oTable = $('#editable').dataTable();
+				load_region(0,1);
+				window.setInterval("datatable()",20000);
+	        });
+			function load_region(parent_id,order_id)
+			{
+				$.ajax({
+					url: '<?=base_url()?>index.php?c=record&m=load_region&parent_id='+parent_id+'&order_id='+order_id,
+					type: 'GET',
+					dataType: 'json',
+					success: function (data) {
+						//console.log(data);
+						if(data.code==1)
+						{
+							var str="";
+							var ary=data.data;
+							for(var i=0;i<ary.length;i++)
+							{
+								str+="<option value="+ary[i].regionid+" hassubinfo='true'>"+ary[i].name+"</option>";
+							}
+							if(order_id==1)
+							{
+
+								$("#select_province").append(str);
+								//$("#select_province").chosen("destroy");
+								$("#select_province").trigger("chosen:updated");
+							}
+							else if(order_id==2)
+							{
+								$("#select_city").append(str);
+								$("#select_city").trigger("chosen:updated");
+							}
+							else if(order_id==3)
+							{
+								$("#select_county").append(str);
+								$("#select_county").trigger("chosen:updated");
+							}
+							else if(order_id==4)
+							{
+								$("#select_station").append(str);
+								$("#select_station").trigger("chosen:updated");
+							}
+						}
+					},
+					error:function(data)
+					{
+						console.log(data);
+					}
+				});
+			}
+
+			function load_region_next(flag)
+			{
+				var parent_id;
+				if(flag==2)
+				{
+					parent_id=$("#select_province").val();
+					$("#select_city").empty();
+					$("#select_city").append("<option>请选择市</option>");
+					$("#select_city").trigger("chosen:updated");
+
+					$("#select_county").empty();
+					$("#select_county").append("<option>请选择县、区</option>");
+					$("#select_county").trigger("chosen:updated");
+
+					$("#select_station").empty();
+					$("#select_station").append("<option>请选择站点</option>");
+					$("#select_station").trigger("chosen:updated");
+				}
+				else if(flag==3)
+				{
+
+					$("#select_county").empty();
+					$("#select_county").append("<option>请选择县、区</option>");
+					$("#select_county").trigger("chosen:updated");
+
+					$("#select_station").empty();
+					$("#select_station").append("<option>请选择站点</option>");
+					$("#select_station").trigger("chosen:updated");
+					//$("#select_couty").val("默认值").trigger("chosen:updated");
+					parent_id=$("#select_city").val();
+				}
+				else if(flag==4)
+				{
+
+					$("#select_station").empty();
+					$("#select_station").append("<option>请选择站点</option>");
+					$("#select_station").trigger("chosen:updated");
+					//$("#select_couty").val("默认值").trigger("chosen:updated");
+					parent_id=$("#select_county").val();
+					console.log(parent_id,flag);
+				}
+				else if(flag==5)
+				{
+					var station_id=$("#select_station").val();
+					//realtime_record(123456);
+					datatable();
+				}
+
+				load_region(parent_id,flag);
+			}
+			function realtime_record(station_id)
+			{
+				$("#tbody").empty();
+				$.ajax({
+					url: '<?=base_url()?>index.php?c=record&m=realtime_record&station_id=' + station_id ,
+					type: 'GET',
+					dataType: 'json',
+					success: function (data) {
+						console.log(data);
+						var str;
+						if(data.code==1) {
+							var str = "";
+							var ary = data.data;
+							var t = $('#editable').DataTable();
+							for (var i = 0; i < ary.length; i++) {
+								t.row.add( [ary[i].siteid,ary[i].vehicle_no,0,0,15.3,49,0,'0%',ary[i].checktime
+								] ).draw();
+								//str +="<tr><td>"+ary[i].siteid+"</td><td>"+ary[i].vehicle_no+"</td><td>0</td><td>0</td><td>15.3</td><td>49</td><td>0</td><td>0%</td><td>"+ary[i].checktime+"</td></tr>";
+							}
+							//$("#editable").append(str);
+						}
+					}
+				});
+			}
+
+			function datatable()
+			{
+				$('#editable').DataTable().clear();
+				$("#editable").dataTable( {
+					/*"retrieve":true,*/
+					"destroy":true,
+					"ajax": "<?=base_url()?>index.php?c=record&m=realtime_record&station_id=123456",
+					"columns": [
+						{ "data": "siteid" },
+						{ "data": "vehicle_no" },
+						{ "data": "axles" },
+						{ "data": "axles" },
+						{ "data": "totalweight" },
+						{ "data": "limitweight" },
+						{ "data": "overweight" },
+						{ "data": "overweightlv" },
+						{ "data": "checktime" },
+						{ "data": "img1","visible": false }
+					]
+				} );
+				//重绘表格
+				$('#editable').DataTable().draw();
+
+				var table = $('#editable').DataTable();
+				$('#editable tbody').on( 'click', 'tr', function () {
+					var obj=table.row( this ).data();
+					$("#car_img").attr('src',obj.img1);
+				} );
+				$('#editable').on( 'init.dt', function () {
+					var obj=table.row(0).data();
+					$("#car_img").attr('src',obj.img1);
+				} );
+				//$("tbody tr:first ").click();
+			}
+	    </script>
+</body>
+
+</html>

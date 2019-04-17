@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <title>桩点图</title>
+    <meta name="keywords" content="桩点图">
+    <meta name="description" content="桩点图">
+
+    <link rel="shortcut icon" href="favicon.ico"> <link href="css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="css/font-awesome.css?v=4.4.0" rel="stylesheet">
+	
+	<link href="css/plugins/chosen/chosen.css" rel="stylesheet">
+	<!-- Data Tables -->
+	<link href="css/plugins/dataTables/dataTables.bootstrap.css" rel="stylesheet">
+
+    <link href="css/animate.css" rel="stylesheet">
+    <link href="css/style.css?v=4.1.0" rel="stylesheet">
+	<style>
+		.chosen-select{
+			width: 150px;
+			
+		}
+		.input-group
+		{
+			float: left;
+			margin-left: 20px;
+			
+		}
+		.form-group
+		{
+			margin-bottom: 30px;
+		}
+		
+		.form-group .font-noraml
+		{
+			float: left;	
+		}
+		.map_heightbox{ width:100%;}
+		
+		
+	</style>
+
+</head>
+
+<body class="gray-bg">
+    <div class="wrapper wrapper-content">
+        <div class="row">
+            <div class="col-sm-9" >
+				<div class="ibox float-e-margins" id="imageMap">
+					<div class="ibox-title">
+                       
+                            <a href="#" onclick="window.history.go(-1);" class="btn btn-primary btn-xs">返回上一级</a>
+							<a href="#"  id='btnSave' class="btn btn-primary btn-xs" >生成截图</a>
+							<a id="down1" class="down" href="" download="downImg" style="display: none;"></a>
+                       
+                    </div>
+					<div class="ibox-content"  >
+						<div id="allmap" style="height: 100%;width: 100%;" class="map_heightbox"></div>
+					</div>
+				</div>
+            </div>
+
+            <div class="col-sm-3" >
+
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <span class="label label-primary pull-right">个</span>
+                        <h5>电杆数量</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <h1 class="no-margins">21</h1>
+                        
+                        <small>个/电杆</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <span class="label label-primary pull-right">米</span>
+                        <h5>线缆总长</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <h1 class="no-margins">3412</h1>
+                        
+                        <small>米/线缆</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <span class="label label-primary pull-right">万元</span>
+                        <h5>估算总价</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <h1 class="no-margins">110.275</h1>
+                        
+                        <small>万元/总价</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+	</div>
+
+    <!-- 全局js -->
+    <script src="js/jquery.min.js?v=2.1.4"></script>
+    <script src="js/bootstrap.min.js?v=3.3.6"></script>
+
+    <!-- 自定义js -->
+    <script src="js/content.js?v=1.0.0"></script>
+
+	<!-- Chosen -->
+	<script src="js/plugins/chosen/chosen.jquery.js"></script>
+	
+	<script src="js/plugins/jeditable/jquery.jeditable.js"></script>
+	<!-- Data Tables -->
+	<script src="js/plugins/dataTables/jquery.dataTables.js"></script>
+	<script src="js/plugins/dataTables/dataTables.bootstrap.js"></script>
+
+	<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=alxYKyDG4B3vL26g3si9hYyq"></script>
+
+	<script src="js/sxsh/sxsh-common.js"></script>
+	
+	<script src="js/jietu/html2canvas.min.js"></script>
+
+	<script src="js/jietu/canvas2image.js"></script>
+	<script src="js/jietu/base64.js"></script>
+	<!-- Page-Level Scripts -->
+    <script>
+
+		// 百度地图API功能
+		var map = new BMap.Map("allmap",{enableMapClick:false});    // 创建Map实例
+		map.centerAndZoom(new BMap.Point(112.544898,37.863545), 11);  // 初始化地图,设置中心点坐标和地图级别
+		//添加地图类型控件
+		map.addControl(new BMap.MapTypeControl({
+			mapTypes:[
+				BMAP_NORMAL_MAP,
+				BMAP_HYBRID_MAP
+			]}));
+		//map.setCurrentCity("太原");          // 设置地图显示的城市 此项是必须设置的
+		map.centerAndZoom("太原",13);      // 初始化地图,用城市名设置地图中心点
+		map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
+		function addMarker(point){
+			//var marker = new BMap.Marker(point);
+			var myIcon = new BMap.Icon("<?= base_url() ?>/img/chao1.png", new BMap.Size(30,45));
+			var marker = new BMap.Marker(point,{icon:myIcon});  // 创建标注
+			map.addOverlay(marker);
+			var opts = {
+				width : 200,     // 信息窗口宽度
+				height: 50,     // 信息窗口高度
+				title : "治超监测站" , // 信息窗口标题
+				enableMessage:true,//设置允许信息窗发送短息
+				message:"治超"
+			}
+			var infoWindow = new BMap.InfoWindow("地址：山西省晋城市泽州县", opts);  // 创建信息窗口对象
+			marker.addEventListener("click", function(){
+				map.openInfoWindow(infoWindow,point); //开启信息窗口
+			});
+		}
+		// 随机向地图添加25个标注
+		var bounds = map.getBounds();
+		var sw = bounds.getSouthWest();
+		var ne = bounds.getNorthEast();
+		var lngSpan = Math.abs(sw.lng - ne.lng);
+		var latSpan = Math.abs(ne.lat - sw.lat);
+		for (var i = 0; i < 25; i ++) {
+			var point = new BMap.Point(sw.lng + lngSpan * (Math.random() * 0.7), ne.lat - latSpan * (Math.random() * 0.7));
+			addMarker(point);
+		}
+		//地图窗口自适应
+		mapheight();
+		function mapheight(){
+			var headerH = $(".header_box").height();
+			var conRightH= $(".contant_right").height();
+			var windowH = $(window).height();
+			var contant_titleH =$(".contant_title").height();
+			var conH =windowH-headerH;
+			if(conRightH>=500){
+				$(".map_heightbox").css({"height":conRightH});
+			}else{
+				$(".map_heightbox").css({"height":conH-contant_titleH-37});
+			}
+			$(window).resize(function(){
+				var headerH = $(".header_box").height();
+				var conRightH= $(".contant_right").height();
+				var windowH = $(window).height();
+				var contant_titleH =$(".contant_title").height();
+				var conH =windowH-headerH;
+				if(conRightH>=500){
+					$(".map_heightbox").css({"height":conRightH});
+				}else{
+					$(".map_heightbox").css({"height":conH-contant_titleH-37});
+				}
+
+			})
+		}
+		// 获取按钮id
+		var btnSave = document.getElementById("btnSave");
+		// 获取内容id
+		var content = document.getElementById("allmap");
+		// 进行canvas生成
+		btnSave.onclick = function(){
+			html2canvas($("#imageMap"), {
+					useCORS : true,
+		            foreignObjectRendering : true,
+		            allowTaint :false , 
+	           		height: $("#imageMap").outerHeight() + 20,  
+	                width: $("#imageMap").outerWidth() + 20  ,
+	                onrendered: function(canvas) {
+	                //将canvas画布放大若干倍，然后盛放在较小的容器内，就显得不模糊了
+	                var timestamp = Date.parse(new Date());
+	                //把截取到的图片替换到a标签的路径下载  
+	                $("#down1").attr('href',canvas.toDataURL());  
+	                //下载下来的图片名字  
+	                $("#down1").attr('download',timestamp + '.png') ; 
+					$("#down1")[0].click();				
+	                //document.body.appendChild(canvas); 
+	            },  
+	            //可以带上宽高截取你所需要的部分内容
+	        }); 
+		}
+    </script>
+</body>
+</html>

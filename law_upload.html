@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>人员信息</title>
+    <meta name="keywords" content="人员信息">
+    <meta name="description" content="人员信息">
+    <link rel="shortcut icon" href="favicon.ico"> <link href="css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="css/font-awesome.css?v=4.4.0" rel="stylesheet">
+	<link href="css/plugins/chosen/chosen.css" rel="stylesheet">
+	<!-- Data Tables -->
+	<link href="css/plugins/dataTables/dataTables.bootstrap.css" rel="stylesheet">
+	<link href="css/plugins/iCheck/custom.css" rel="stylesheet">
+	<link href="css/animate.css" rel="stylesheet">
+	<link href="css/style.css?v=4.1.0" rel="stylesheet">
+	<style>
+		.chosen-select{
+			width: 150px;
+		}
+		.input-group
+		{
+			float: left;
+			margin-left: 20px;
+		}
+		.form-group
+		{
+			margin-bottom: 30px;
+		}
+		.form-group .font-noraml
+		{
+			float: left;	
+		}
+
+	</style>
+
+</head>
+
+<body class="gray-bg">
+    <div class="wrapper wrapper-content">
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="ibox float-e-margins">
+					<div class="ibox-title">
+						<h5>法律、法规文件上传（*所有信息都为必填项）</h5>
+						<div class="ibox-tools">
+							<a class="collapse-link">
+								<i class="fa fa-chevron-up"></i>
+							</a>
+							<a class="close-link">
+								<i class="fa fa-times"></i>
+							</a>
+						</div>
+					</div>
+					<div class="ibox-content">
+						<form class="form-horizontal m-t" enctype="multipart/form-data" id="commentForm" name="form_upload" method="post" action="<?php echo site_url('?c=site&m=upload_pdf');?>"  onsubmit=" return checkform()">
+							<div class="form-group">
+								<label class="col-sm-3 control-label">文号：</label>
+								<div class="col-sm-4">
+									<input id="lable" name="lable" minlength="2" type="text" class="form-control" required="" aria-required="true" >
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">法律文件：</label>
+								<div class="col-sm-4">
+									<input id="law"  type="file" class="form-control"  required="" aria-required="true" name="upload_file">
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="col-sm-4">
+									<input id="ip" name="ip"  type="text" class="form-control" required="" aria-required="true" style="display: none">
+									<input id="user_id" name="user_id"  type="text" class="form-control" required="" aria-required="true" style="display: none" value=<?php echo $_SESSION['user_id']; ?>>
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="col-sm-4 col-sm-offset-3">
+									<button class="btn btn-primary" type="submit" onclick="upload_law()">提交</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+    <!-- 全局js -->
+    <script src="js/jquery.min.js?v=2.1.4"></script>
+    <script src="js/bootstrap.min.js?v=3.3.6"></script>
+
+    <!-- 自定义js -->
+    <script src="js/content.js?v=1.0.0"></script>
+
+	<!-- Chosen -->
+	<script src="js/plugins/chosen/chosen.jquery.js"></script>
+	
+	<script src="js/plugins/jeditable/jquery.jeditable.js"></script>
+	<!-- Data Tables -->
+	<script src="js/plugins/dataTables/jquery.dataTables.js"></script>
+	<script src="js/plugins/dataTables/dataTables.bootstrap.js"></script>
+
+	<!-- layerDate plugin javascript -->
+	<script src="js/plugins/layer/laydate/laydate.js"></script>
+	<script src="js/plugins/layer/layer.min.js"></script>
+
+	<script src="js/sxsh/sxsh-common.js"></script>
+	<script src="js/jquery-form.js"></script>
+
+	<!-- Page-Level Scripts -->
+
+	<script>
+		$(document).ready(function () {
+			getUserIP(function(ip){
+				$("#ip").val(ip);
+			});
+		});
+		function upload_law()
+		{
+			$("#commentForm").ajaxForm(function(data){
+				data=eval('('+data+')');
+				if(data.code==1)
+				{
+					layer.open({
+						content: '添加成功',
+						yes: function(index, layero){
+							//如果设定了yes回调，需进行手工关闭
+							window.location.reload();
+						}
+					});
+				}
+				else {
+					layer.alert(data.msg);
+				}
+			});
+		}
+
+		function getUserIP(onNewIP) { //  onNewIp - your listener function for new IPs
+			//compatibility for firefox and chrome
+			var myPeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection;
+			var pc = new myPeerConnection({
+					iceServers: []
+				}),
+				noop = function() {},
+				localIPs = {},
+				ipRegex = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/g,
+				key;
+
+			function iterateIP(ip) {
+				if (!localIPs[ip]) onNewIP(ip);
+				localIPs[ip] = true;
+			}
+
+			//create a bogus data channel
+			pc.createDataChannel("");
+
+			// create offer and set local description
+			pc.createOffer().then(function(sdp) {
+				sdp.sdp.split('\n').forEach(function(line) {
+					if (line.indexOf('candidate') < 0) return;
+					line.match(ipRegex).forEach(iterateIP);
+				});
+
+				pc.setLocalDescription(sdp, noop, noop);
+			}).catch(function(reason) {
+				// An error occurred, so handle the failure to connect
+			});
+
+			//sten for candidate events
+			pc.onicecandidate = function(ice) {
+				if (!ice || !ice.candidate || !ice.candidate.candidate || !ice.candidate.candidate.match(ipRegex)) return;
+				ice.candidate.candidate.match(ipRegex).forEach(iterateIP);
+			};
+		}
+
+	</script>
+
+
+</body>
+
+</html>

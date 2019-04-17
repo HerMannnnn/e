@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>权限设置</title>
+    <meta name="keywords" content="权限设置">
+    <meta name="description" content="权限设置">
+
+    <link rel="shortcut icon" href="favicon.ico"> <link href="css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="css/font-awesome.css?v=4.4.0" rel="stylesheet">
+	
+	<link href="css/plugins/chosen/chosen.css" rel="stylesheet">
+	<!-- Data Tables -->
+	<link href="css/plugins/dataTables/dataTables.bootstrap.css" rel="stylesheet">
+
+    <link href="css/animate.css" rel="stylesheet">
+    <link href="css/style.css?v=4.1.0" rel="stylesheet">
+	<style>
+		.chosen-select{
+			width: 150px;
+		}
+		.input-group
+		{
+			float: left;
+			margin-left: 20px;
+		}
+		.form-group
+		{
+			margin-bottom: 30px;
+		}
+		.form-group .font-noraml
+		{
+			float: left;	
+		}
+	</style>
+</head>
+
+<body class="gray-bg">
+    <div class="wrapper wrapper-content">
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="ibox float-e-margins">
+					<div class="ibox-content">
+						<table class="table table-striped table-bordered table-hover dataTables-example" id="editable">
+							<thead>
+								<tr>
+									<th>编号</th>
+									<th>权限名称</th>
+									<th>操作</th>
+								</tr>
+							</thead>
+							<tbody id="tbody">
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+    <!-- 全局js -->
+    <script src="js/jquery.min.js?v=2.1.4"></script>
+    <script src="js/bootstrap.min.js?v=3.3.6"></script>
+
+    <!-- 自定义js -->
+    <script src="js/content.js?v=1.0.0"></script>
+
+	<!-- Chosen -->
+	<script src="js/plugins/chosen/chosen.jquery.js"></script>
+	
+	<script src="js/plugins/jeditable/jquery.jeditable.js"></script>
+	<!-- Data Tables -->
+	<script src="js/plugins/dataTables/jquery.dataTables.js"></script>
+	<script src="js/plugins/dataTables/dataTables.bootstrap.js"></script>
+	
+	<script src="js/sxsh/sxsh-common.js"></script>
+
+	<script src="js/plugins/layer/layer.min.js"></script>
+	<!-- Page-Level Scripts -->
+	<script>
+
+		$(document).ready(function () {
+			get_role_msg();
+		});
+		function get_role_msg()
+		{
+			$.ajax({
+				url: '<?=base_url()?>index.php?c=user&m=get_role_msg',
+				type: 'GET',
+				dataType: 'json',
+				success: function (data) {
+					if(data.code==1)
+					{
+						var tr="";
+						var ary =data.data;
+						if(ary.length>0)
+						{
+							for(var i=0;i<ary.length;i++)
+							{
+								tr+="<tr><td>"+ary[i].id+"</td><td>"+ary[i].desc+"</td><td><button class='btn btn-primary ' type='button'><i class='fa fa-check'></i>&nbsp;设置权限</button></td></tr>";
+							}
+						}
+						else
+						{
+							tr+="<tr ><td colspan='3' align='center'>暂无数据！</td></tr>";
+						}
+						$("#tbody").append(tr);
+					}
+					else
+					{
+						layer.alert("查询出错了，请稍后再试！");
+					}
+				}
+			});
+		}
+	</script>
+
+
+</body>
+
+</html>

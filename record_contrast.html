@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据对比</title>
+    <meta name="keywords" content="数据对比">
+    <meta name="description" content="数据对比">
+
+    <link rel="shortcut icon" href="favicon.ico"> <link href="css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="css/font-awesome.css?v=4.4.0" rel="stylesheet">
+	
+	<link href="css/plugins/chosen/chosen.css" rel="stylesheet">
+	<!-- Data Tables -->
+	<link href="css/plugins/dataTables/dataTables.bootstrap.css" rel="stylesheet">
+
+    <link href="css/animate.css" rel="stylesheet">
+    <link href="css/style.css?v=4.1.0" rel="stylesheet">
+	<style>
+		.chosen-select{
+			width: 150px;
+		}
+		.input-group
+		{
+			float: left;
+			margin-left: 20px;
+		}
+		.form-group
+		{
+			margin-bottom: 30px;
+		}
+
+		.layer-date
+		{
+			max-width: 200px;
+			float: left;
+		}
+		.btn-primary
+		{
+			margin-left: 20px;;
+		}
+	</style>
+
+</head>
+
+<body class="gray-bg">
+    <div class="wrapper wrapper-content">
+        <div class="row">
+            <div class="col-sm-12">  
+				<div class="ibox float-e-margins">
+					<div class="ibox-content">
+						<div class="form-group">
+							<!-- <label class="font-noraml">选择区域</label> -->
+							<label class="col-sm-2 control-label">查询范围：</label>
+							<div class="input-group">
+								<select data-placeholder="请选择逃费类型..." class="chosen-select"  tabindex="2" id="escape_type">
+									<option value="">请选择逃费类型</option>
+
+								</select>
+							</div>
+
+							<div class="input-group">
+								<input type="text" placeholder="请输入单据编号" class="form-control" style="width: 150px;" id="record_num">
+							</div>
+
+						</div>
+					</div>
+					<div class="ibox-content">
+						<div class="form-group">
+							<label class="col-sm-2 control-label">请选择起止时间：</label>
+							<div class="col-sm-10">
+								<input placeholder="开始日期" class="form-control layer-date" id="start">
+								<button class="btn btn-primary " type="button" onclick="record_contrast()">查询</button>
+							</div>
+						</div>
+					</div>
+				</div>                
+            </div>
+        </div>
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="ibox float-e-margins">
+					<div class="ibox-content">
+						<table class="table table-striped table-bordered table-hover dataTables-example" id="editable">
+							<thead>
+								<tr>
+									<th>录入日期</th>
+									<th>单据编号</th>
+									<th>所属中队</th>
+									<th>逃费时间</th>
+									<th>逃费时间2</th>
+									<th>入口收费站点</th>
+									<th>出口收费站点</th>
+									<th>逃费类型</th>
+									<th>逃费车车号</th>
+									<th>逃费金额合计</th>
+								</tr>
+							</thead>
+							<tbody>
+
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- 全局js -->
+	<script src="js/jquery.min.js?v=2.1.4"></script>
+	<script src="js/bootstrap.min.js?v=3.3.6"></script>
+
+	<!-- 自定义js -->
+	<script src="js/content.js?v=1.0.0"></script>
+
+	<!-- Chosen -->
+	<script src="js/plugins/chosen/chosen.jquery.js"></script>
+	
+	<script src="js/plugins/jeditable/jquery.jeditable.js"></script>
+	<!-- Data Tables -->
+	<script src="js/plugins/dataTables/jquery.dataTables.js"></script>
+	<script src="js/plugins/dataTables/dataTables.bootstrap.js"></script>
+
+	<!-- layerDate plugin javascript -->
+	<script src="js/plugins/layer/laydate/laydate.js"></script>
+	<script src="js/plugins/layer/layer.min.js"></script>
+
+	<script src="js/sxsh/sxsh-common.js"></script>
+	<!-- Page-Level Scripts -->
+	<script>
+		$(document).ready(function () {
+			$('.dataTables-example').dataTable();
+			get_escppe_type();
+		});
+		//日期范围限制
+		//年月范围
+		laydate.render({
+			elem: '#start',
+			type: 'date',
+			range: '~'
+		});
+
+		function record_contrast()
+		{
+			var escape_type=$("#escape_type").val();
+			var record_num=$("#record_num").val();
+			var time=$("#start").val();
+			if(time!="")
+			{
+				time=time.replace(/\s+/g,"");
+				$("#editable").dataTable( {
+					/*"retrieve":true,*/
+					"destroy":true,
+					/*"ajax": "<?=base_url()?>index.php?c=record&m=load_record&station_id="+station_id+"&start_time="+start_time+"&end_time="+end_time+"",*/
+					"ajax": "<?=base_url()?>index.php?c=record&m=check_record&escape_type="+(escape_type==''?0:escape_type)+"&record_num="+(record_num==''?0:record_num)+"&time="+time+"",
+					"columns": [
+
+						{ "data": "time" },
+						{ "data": "record_num" },
+						{ "data": "site_id" },
+						{ "data": "escape_time" },
+						{ "data": "escape_time2" },
+						{ "data": "in_station_name" },
+						{ "data": "out_station_name" },
+						{ "data": "escapetype_desc" },
+						{ "data": "veh_plate" },
+						{ "data": "total_money" }
+					]
+				} );
+			}
+			else
+			{
+				layer.alert('请填写查询条件！');
+			}
+		}
+		function get_escppe_type()
+		{
+			$.ajax({
+				url: '<?=base_url()?>index.php?c=user&m=get_escppe_type',
+				type: 'GET',
+				dataType: 'json',
+				success: function (data) {
+					if(data.code==1)
+					{
+						var str="";
+						var ary=data.data;
+						for(var i=0;i<ary.length;i++)
+						{
+							str+="<option value="+ary[i].id+" hassubinfo='true'>"+ary[i].desc+"</option>";
+						}
+						console.log(str);
+						$("#escape_type").append(str);
+						$("#escape_type").trigger("chosen:updated");
+					}
+				}
+			})
+		}
+	</script>
+
+</body>
+
+</html>

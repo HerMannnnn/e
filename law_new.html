@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>法律法规</title>
+    <meta name="keywords" content="法律法规">
+    <meta name="description" content="法律法规">
+    <link rel="shortcut icon" href="favicon.ico"> <link href="css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="css/font-awesome.css?v=4.4.0" rel="stylesheet">
+    <link href="css/plugins/footable/footable.core.css" rel="stylesheet">
+
+    <link href="css/animate.css" rel="stylesheet">
+    <link href="css/style.css?v=4.1.0" rel="stylesheet">
+
+</head>
+
+<body class="gray-bg">
+    <div class="wrapper wrapper-content animated fadeInRight">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-content">
+							<script id="editor" type="text/plain" style="width:1024px;height:500px;"></script>
+							<p style="margin-top: 20px;">
+								<button class="btn btn-primary " type="button" onclick="getContent()"><i class="fa fa-check"></i>&nbsp;提交</button>
+								<button class="btn btn-default " type="button" onclick="goback()"><i class="fa fa-times"></i>&nbsp;取消</button>
+							</p>
+						</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <!-- 全局js -->
+    <script src="js/jquery.min.js?v=2.1.4"></script>
+    <script src="js/bootstrap.min.js?v=3.3.6"></script>
+    <script src="js/plugins/footable/footable.all.min.js"></script>
+
+	<!--uidter-->
+	<script type="text/javascript" charset="utf-8" src="uidter/ueditor.config.js"></script>
+	<script type="text/javascript" charset="utf-8" src="uidter/ueditor.all.min.js"> </script>
+	<!--建议手动加在语言，避免在ie下有时因为加载语言失败导致编辑器加载失败-->
+	<!--这里加载的语言文件会覆盖你在配置项目里添加的语言类型，比如你在配置项目里配置的是英文，这里加载的中文，那最后就是中文-->
+	<script type="text/javascript" charset="utf-8" src="uidter/lang/zh-cn/zh-cn.js"></script>
+
+
+    <!-- 自定义js -->
+    <script src="js/content.js?v=1.0.0"></script>
+    <script>
+        $(document).ready(function() {
+            $('.footable').footable();
+            $('.footable2').footable();
+		});
+		//实例化编辑器
+		//建议使用工厂方法getEditor创建和引用编辑器实例，如果在某个闭包下引用该编辑器，直接调用UE.getEditor('editor')就能拿到相关的实例
+		var ue = UE.getEditor('editor');
+
+		//插入指定内容
+		function insertHtml() {
+			var value = prompt('插入html代码', '');
+			//var str_html="<p>文本编辑<img src='/ueditor/php/upload/image/20180829/1535509826557907.png' title='1535509826557907.png' alt='vehplate.png'/></p>";
+			UE.getEditor('editor').execCommand('insertHtml', value);
+		}
+		function  goback()
+		{
+			window.history.back();
+		}
+
+		function getAllHtml() {
+			alert(UE.getEditor('editor').getAllHtml());
+			console.log(UE.getEditor('editor').getAllHtml());
+		}
+
+
+		function getContent() {
+			var arr = [];
+			arr.push(UE.getEditor('editor').getContent());
+			alert(arr.join("\n"));
+			console.log(arr.join("\n"));
+		}
+    </script>
+
+
+
+</body>
+
+</html>
